@@ -1,5 +1,20 @@
 # back_end_server_mongo-B09X56PSCQ
 
+<details>
+<summary>config file</summary>
+
+``` JavaScript
+// mongodb+srv://mongoAtlas:<password>@cluster0.zhqnh7c.mongodb.net/<DATABASE_NAME>?retryWrites=true&w=majority
+exports.mongodb_connect = "mongodb+srv://mongoAtlas:<PASSWD><@cluster0.zhqnh7c.mongodb.net/blogUserDatabase?retryWrites=true&w=majority";
+```
+
+``` JavaScript
+const config = require('./.config.js')
+mongoose.connect(config.mongodb_connect)
+```
+
+</details>
+
 ---
 
 ### Refeences

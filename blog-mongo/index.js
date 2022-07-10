@@ -4,11 +4,12 @@ const express = require('express')
 const app = express()
 app.use(express.urlencoded({ extended: true }))
 const mongoose = require('mongoose')
+const config = require('./.config.js')
 
 app.set('view engine', 'ejs')
 
 // Connecting to MongoDB
-mongoose.connect('mongodb+srv://mongoAtlas:QlVPRbTXXMKF2dSw@cluster0.zhqnh7c.mongodb.net/blogUserDatabase?retryWrites=true&w=majority')
+mongoose.connect(config.mongodb_connect)
         .then(() => {
         console.log('Success: Connected to MongoDB')
         })
