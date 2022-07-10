@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>blog投稿ページ</title>
+</head>
+<body>
+    <h1>blog投稿ページ</h1>
+    <form action="/blog/create" method="post">
+        タイトル:<input type="text" name="title">
+        <br>
+        要約:<input type="text" name="summary">
+        <br>
+        イメージ:<input type="text" name="image" placeholder="/img1.png">
+        <br>
+        本文:<textarea name="textBody" cols="30" rows="15"></textarea>
+        <br>
+        <button type="submit">Send</button>
+    </form>
+</body>
+</html>
