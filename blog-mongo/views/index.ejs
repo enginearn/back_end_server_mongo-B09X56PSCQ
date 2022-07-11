@@ -1,0 +1,29 @@
+// index.ejs
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <header>Header</header>
+    <main>
+        <div>
+            <% allBlogs.forEach((blog) => { %>
+            <div>
+                <a href="blog/<%= blog._id %>">
+                    <div>
+                        <h2><%= blog.title %></h2>
+                        <p><%= blog.summary  %></p>
+                    </div>
+                </a>
+            </div>
+            <% })%>
+        </div>
+    </main>
+    <footer>footer</footer>
+</body>
+</html>

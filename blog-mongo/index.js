@@ -60,8 +60,10 @@ app.get('/', async(req, res) => {
     console.log(test);
     const allBlogs = await BlogModel.find();
     console.log('allBlogs: ', allBlogs);
-    res.send('Read All bogs!');
+    // res.send('Read All bogs!');
+    res.render('index', { allBlogs: allBlogs });
 })
+
 // Read single blog
 app.get("/blog/:id", async(req, res) => {
     console.log(req.params.id);
