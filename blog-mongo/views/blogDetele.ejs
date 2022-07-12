@@ -1,17 +1,18 @@
-// blogRead.ejs
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <title>Document</title>
+    <title>削除ページ</title>
     <%- include("./head"); %>
 </head>
 <body>
     <%- include("./header"); %>
     <main>
         <div>
+            <form action="/blog/delete/<%= singleBlog._id %>" method="post">
             <h1><%= singleBlog.title %></h1>
             <p><%= singleBlog.textBody %></p>
+            <button type="submit">削除する</button>
+            </form>
         </div>
     </main>
     <%- include("./footer"); %>
