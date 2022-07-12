@@ -7,7 +7,7 @@ const mongoose = require('mongoose')
 const config = require('./.config.js')
 
 app.set('view engine', 'ejs')
-// app.set("views", appRoot.resolve("./views"));
+app.use("/public", express.static('public'))
 
 // Connecting to MongoDB
 mongoose.connect(config.mongodb_connect)
@@ -50,7 +50,8 @@ app.post("/blog/create", (req, res) => {
         } else {
             console.log("Success: Blog created!");
             res.send("データを投稿しました!");
-            res.redirect("/");
+            return;
+            // res.redirect("/");
         }
     })
     res.send("Saved data!");
@@ -63,7 +64,7 @@ app.get('/', async(req, res) => {
     const allBlogs = await BlogModel.find();
     console.log('allBlogs: ', allBlogs);
     // res.send('Read All bogs!');
-    res.render('index', { allBlogs});
+    res.render('index', {allBlogs: allBlogs});
 })
 
 // Read single blog
@@ -80,7 +81,7 @@ app.get("/blog/update/:id", async (req, res) => {
     const singleBlog = await BlogModel.findById(req.params.id);
     console.log('singleBlog: ', singleBlog);
     // res.send("Update blog!");
-    res.render('blogUpdate', {singleBlog});
+    res.render('blogUpdate', {singleBlog: singleBlog});
 })
 
 app.post("/blog/update/:id", (req, res) => {
@@ -102,7 +103,7 @@ app.get("/blog/delete/:id", async (req, res) => {
     const singleBlog = await BlogModel.findById(req.params.id);
     console.log('singleBlog: ', singleBlog);
     // res.send("Delete blog!");
-    res.render('blogDelete', {singleBlog});
+    res.render('blogDelete', {singleBlog: singleBlog});
 })
 
 app.post("/blog/delete/:id", (req, res) => {
