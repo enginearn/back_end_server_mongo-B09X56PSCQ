@@ -112,10 +112,14 @@ app.get("/blog/:id", async(req, res) => {
 
 // Update blog
 app.get("/blog/update/:id", async (req, res) => {
-    const singleBlog = await BlogModel.findById(req.params.id);
-    console.log('singleBlog: ', singleBlog);
-    // res.send("Update blog!");
-    res.render('blogUpdate', {singleBlog: singleBlog});
+    if (req.session.userId) {
+        const singleBlog = await BlogModel.findById(req.params.id);
+        console.log('singleBlog: ', singleBlog);
+        // res.send("Update blog!");
+        res.render('blogUpdate', {singleBlog: singleBlog});
+    } else {
+        res.redirect('/user/login');
+    }
 })
 
 app.post("/blog/update/:id", (req, res) => {
@@ -134,10 +138,14 @@ app.post("/blog/update/:id", (req, res) => {
 
 // Delete blog
 app.get("/blog/delete/:id", async (req, res) => {
-    const singleBlog = await BlogModel.findById(req.params.id);
-    console.log('singleBlog: ', singleBlog);
-    // res.send("Delete blog!");
-    res.render('blogDelete', {singleBlog: singleBlog});
+    if (req.session.userId) {
+        const singleBlog = await BlogModel.findById(req.params.id);
+        console.log('singleBlog: ', singleBlog);
+        // res.send("Delete blog!");
+        res.render('blogDelete', {singleBlog: singleBlog});
+    } else {
+        res.redirect('/user/login');
+    }
 })
 
 app.post("/blog/delete/:id", (req, res) => {
