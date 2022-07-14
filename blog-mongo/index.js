@@ -23,13 +23,13 @@ mongoose.connect(config.mongodb_connect)
         .then(() => {
         console.log('Success: Connected to MongoDB')
         })
-        .catch(err => {
-        console.error('Failure: Unconnected to MongoDB', err)
+        .catch((error) => {
+        console.error('Failure: Unconnected to MongoDB', error)
         })
 
+// Mongo Schema and Model
 const Schema = mongoose.Schema
 
-// Mongo Schema and Model
 const blogSchema = new Schema({
     // object name : type,
     title: String,
@@ -62,6 +62,25 @@ const BlogModel = mongoose.model('Blog', blogSchema)
 const UserModel = mongoose.model('User', userSchema)
 
 // BLOG ROUTES
+// Read all blogs
+app.get('/', async(req, res) => {
+    const test = 'test data';
+    console.log(test);
+    const allBlogs = await BlogModel.find();
+    console.log('allBlogs: ', allBlogs);
+    console.log('req: ', req);
+    // res.send('Read All bogs!');
+    res.render('index', {allBlogs: allBlogs, session: req.session.userId});
+})
+
+// Read single blog
+app.get("/blog/:id", async(req, res) => {
+    console.log(req.params.id);
+    const singleBlog = await BlogModel.findById(req.params.id);
+    console.log('singleBlog: ', singleBlog);
+    // res.send("Read single blog!");
+    res.render('blogRead', {singleBlog: singleBlog, session: req.session.userId});
+})
 
 // Create a new blog
 app.get("/blog/create", (req, res) => {
@@ -79,36 +98,18 @@ app.post("/blog/create", (req, res) => {
     BlogModel.create(req.body, (error, savedBlogData) => {
         if (error) {
             console.error("Error: ", error);
-            res.send("データの投稿に失敗しました...");
+            // res.send("データの投稿に失敗しました...");
+            res.render("error", {message: "/blog/createのエラー"});
             return res.sendStatus(500);
         } else {
             console.log("Success: Blog created!");
-            res.send("データを投稿しました!");
+            // res.send("データを投稿しました!");
+            // res.send("Saved data!");
             res.redirect("/");
         }
     })
-    res.send("Saved data!");
 })
 
-// Read all blogs
-app.get('/', async(req, res) => {
-    const test = 'test data';
-    console.log(test);
-    const allBlogs = await BlogModel.find();
-    console.log('allBlogs: ', allBlogs);
-    console.log('req: ', req);
-    // res.send('Read All bogs!');
-    res.render('index', {allBlogs: allBlogs});
-})
-
-// Read single blog
-app.get("/blog/:id", async(req, res) => {
-    console.log(req.params.id);
-    const singleBlog = await BlogModel.findById(req.params.id);
-    console.log('singleBlog: ', singleBlog);
-    // res.send("Read single blog!");
-    res.render('blogRead', {singleBlog});
-})
 
 // Update blog
 app.get("/blog/update/:id", async (req, res) => {
@@ -126,12 +127,13 @@ app.post("/blog/update/:id", (req, res) => {
     BlogModel.updateOne({ _id: req.params.id }, req.body).exec((error) => {
         if (error) {
             console.error("Error: ", error);
-            res.send("データの更新に失敗しました...");
+            // res.send("データの更新に失敗しました...");
+            res.render("error", {message: "/blog/updateのエラー"});
             return res.sendStatus(500);
         } else {
             console.log("Success: Blog updated!");
-            res.send("データを更新しました!");
             res.redirect("/");
+            // res.send("データを更新しました!");
         }
     })
 })
@@ -149,20 +151,22 @@ app.get("/blog/delete/:id", async (req, res) => {
 })
 
 app.post("/blog/delete/:id", (req, res) => {
-    BlogModel.deleteOne({ _id: req.params.id }, (error) => {
+    BlogModel.deleteOne({ _id: req.params.id }).exec((error) => {
         if (error) {
             console.error("Error: ", error);
-            res.send("データの削除に失敗しました...");
+            // res.send("データの削除に失敗しました...");
+            res.render("error", {message: "/blog/deleteのエラー"});
             return res.sendStatus(500);
         } else {
             console.log("Success: Blog deleted!");
-            res.send("データを削除しました!");
+            // res.send("データを削除しました!");
             res.redirect("/");
         }
     })
 })
 
 // User function
+//Create a new user
 app.get("/user/create", (req, res) => {
     res.render("userCreate");
 })
@@ -171,11 +175,12 @@ app.post("/user/create", (req, res) => {
     UserModel.create(req.body, (error, savedUserData) => {
         if (error) {
             console.error("Error: ", error);
-            res.send("ユーザーデータの書き込みに失敗しました...");
+            // res.send("ユーザーデータの書き込みに失敗しました...");
+            res.render("error", {message: "/user/createのエラー"});
             return res.sendStatus(500);
         } else {
             console.log("Success: User created!");
-            res.send("ユーザーデータの登録が成功しました!");
+            // res.send("ユーザーデータの登録が成功しました!");
             res.redirect("/");
         }
     })
@@ -192,15 +197,22 @@ app.post("/user/login", (req, res) => {
             if (savedUserData.password === req.body.password) {
                 req.session.userId = savedUserData._id; // mongoDBeの_idをsessionに保存
                 console.log("Success: User logged in!");
-                res.send("ユーザーデータのログインが成功しました!");
-                // res.redirect("/");
+                res.redirect("/");
+                // res.send("ユーザーデータのログインが成功しました!");
                 // return res.sendStatus(200);
             } else {
-                console.error("Error: ", error);
-                res.send("ユーザーデータのログインに失敗しました...");
-                return res.sendStatus(500);
+                console.log("Error: User password is incorrect!");
+                // res.send("ユーザーデータのパスワードが間違っています!");
+                res.render("error", {message: "/user/loginのエラー"});
+                res.redirect("/user/login");
             }
-        }
+        } else {
+                console.error("Error: ", error);
+                // res.send("ユーザーデータのログインに失敗しました...");
+                res.render("error", {message: "/user/loginのエラー: ユーザーデータが存在しません"});
+                res.redirect("/user/create");
+                // return res.sendStatus(500);
+            }
     })
 })
 
