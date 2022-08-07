@@ -1,5 +1,3 @@
-// index.js
-
 const express = require('express')
 const app = express()
 app.use(express.urlencoded({ extended: true }))
@@ -73,10 +71,10 @@ app.get('/', async(req, res) => {
     res.render('index', {allBlogs: allBlogs, session: req.session.userId});
 })
 
-// Read single blog
+// Read a single blog
 app.get("/blog/:id", async(req, res) => {
     console.log(req.params.id);
-    const singleBlog = await BlogModel.findById(req.params.id);
+    const singleBlog = await BlogModel.findById(req.params.id.trim()); // req.params.id
     console.log('singleBlog: ', singleBlog);
     // res.send("Read single blog!");
     res.render('blogRead', {singleBlog: singleBlog, session: req.session.userId});
@@ -110,23 +108,22 @@ app.post("/blog/create", (req, res) => {
     })
 })
 
-
 // Update blog
 app.get("/blog/update/:id", async (req, res) => {
     if (req.session.userId) {
-        const singleBlog = await BlogModel.findById(req.params.id);
+        const singleBlog = await BlogModel.findById(req.params.id.trim()); // req.params.id
         console.log('singleBlog: ', singleBlog);
         // res.send("Update blog!");
-        res.render('blogUpdate', {singleBlog: singleBlog});
+        res.render('blogUpdate', {singleBlog});
     } else {
         res.redirect('/user/login');
     }
 })
 
 app.post("/blog/update/:id", (req, res) => {
-    BlogModel.updateOne({ _id: req.params.id }, req.body).exec((error) => {
+    BlogModel.updateOne({_id: req.params.id}, req.body).exec((error) => { // req.params.id
         if (error) {
-            console.error("Error: ", error);
+            console.log("Error: ", error);
             // res.send("データの更新に失敗しました...");
             res.render("error", {message: "/blog/updateのエラー"});
             return res.sendStatus(500);
@@ -141,19 +138,19 @@ app.post("/blog/update/:id", (req, res) => {
 // Delete blog
 app.get("/blog/delete/:id", async (req, res) => {
     if (req.session.userId) {
-        const singleBlog = await BlogModel.findById(req.params.id);
+        const singleBlog = await BlogModel.findById(req.params.id.trim());
         console.log('singleBlog: ', singleBlog);
         // res.send("Delete blog!");
-        res.render('blogDelete', {singleBlog: singleBlog});
+        res.render('blogDelete', {singleBlog});
     } else {
         res.redirect('/user/login');
     }
 })
 
 app.post("/blog/delete/:id", (req, res) => {
-    BlogModel.deleteOne({ _id: req.params.id }).exec((error) => {
+    BlogModel.deleteOne({_id: req.params.id}).exec((error) => { // req.params.id
         if (error) {
-            console.error("Error: ", error);
+            console.log("Error: ", error);
             // res.send("データの削除に失敗しました...");
             res.render("error", {message: "/blog/deleteのエラー"});
             return res.sendStatus(500);
@@ -217,6 +214,7 @@ app.post("/user/login", (req, res) => {
 })
 
 // Connecting to port
-app.listen(5000, () => {
-    console.log('Server is running on port 5000');
+const port = process.env.PORT || 5000;
+app.listen(port, () => {
+    console.log(`Server is running on port: ${port}`);
 })

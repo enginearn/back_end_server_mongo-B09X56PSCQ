@@ -15,7 +15,7 @@
             <p><%= singleBlog.textBody %></p>
         </div>
         <div class="button">
-            <% if (sessin !== undefined) { %>
+            <% if (session !== undefined) { %>
                 <a href="/blog/<%= singleBlog.id %>/edit">編集</a>
             <% } %>
             <% if (session !== undefined) { %>
